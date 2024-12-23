@@ -1,16 +1,88 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debounce Function</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
 
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+
+    <div class="container">
+        <h1>Debounce Example</h1>
+        <input type="text" id="debouncedInput" placeholder="Start typing...">
+        <p>Logged Input: <span id="output"></span></p>
+    </div>
+
+    <script>
+        // Debounce function implementation
+        function debounce(callback, delay, immediate = false) {
+            let timeout;
+            return function(...args) {
+                const context = this;  // Save the context
+                const later = () => {
+                    timeout = null;
+                    if (!immediate) {
+                        callback.apply(context, args);  // Call the callback with context and arguments
+                    }
+                };
+
+                const callNow = immediate && !timeout;  // If immediate is true and timeout doesn't exist, call now
+                clearTimeout(timeout);  // Clear the previous timeout
+
+                timeout = setTimeout(later, delay);  // Set a new timeout to call the function later
+
+                if (callNow) {
+                    callback.apply(context, args);  // Call immediately if needed
+                }
+            };
+        }
+
+        // Callback function that logs the input
+        function logInput(value) {
+            document.getElementById('output').textContent = value;
+        }
+
+        // Create a debounced version of logInput
+        const debouncedLogInput = debounce(logInput, 3000, true);  // 3 seconds delay with immediate execution
+
+        // Attach event listener to the input field
+        document.getElementById('debouncedInput').addEventListener('input', function() {
+            debouncedLogInput(this.value);
+        });
+    </script>
 
 </body>
-
 </html>
